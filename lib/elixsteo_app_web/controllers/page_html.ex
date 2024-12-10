@@ -1,0 +1,10 @@
+defmodule ElixsteoAppWeb.PageHTML do
+  @moduledoc """
+  This module contains pages rendered by PageController.
+
+  See the `page_html` directory for all templates available.
+  """
+  use ElixsteoAppWeb, :html
+
+  embed_templates "page_html/*"
+end
