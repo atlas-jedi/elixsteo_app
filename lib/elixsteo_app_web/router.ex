@@ -17,6 +17,7 @@ defmodule ElixsteoAppWeb.Router do
   scope "/", ElixsteoAppWeb do
     pipe_through :browser
 
+    live "/coupons", CouponLive
     get "/", PageController, :home
   end
 
