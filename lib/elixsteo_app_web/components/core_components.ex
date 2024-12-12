@@ -50,7 +50,11 @@ defmodule ElixsteoAppWeb.CoreComponents do
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       class="relative z-50 hidden"
     >
-      <div id={"#{@id}-bg"} class="bg-zinc-50/90 fixed inset-0 transition-opacity" aria-hidden="true" />
+      <div
+        id={"#{@id}-bg"}
+        class="bg-background/80 fixed inset-0 transition-opacity"
+        aria-hidden="true"
+      />
       <div
         class="fixed inset-0 overflow-y-auto"
         aria-labelledby={"#{@id}-title"}
@@ -66,7 +70,7 @@ defmodule ElixsteoAppWeb.CoreComponents do
               phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
               phx-key="escape"
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-white p-14 shadow-lg ring-1 transition"
+              class="shadow-lg relative hidden rounded-lg border bg-card p-14 shadow-background/10 ring-1 ring-border transition"
             >
               <div class="absolute top-6 right-5">
                 <button
@@ -202,7 +206,7 @@ defmodule ElixsteoAppWeb.CoreComponents do
   def simple_form(assigns) do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class="mt-10 space-y-8 bg-white">
+      <div class="mt-10 space-y-8 bg-background">
         {render_slot(@inner_block, f)}
         <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
           {render_slot(action, f)}
@@ -231,8 +235,8 @@ defmodule ElixsteoAppWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
-        "text-sm font-semibold leading-6 text-white active:text-white/80",
+        "phx-submit-loading:opacity-75 rounded-lg bg-primary hover:bg-primary/90",
+        "py-2 px-3 text-sm font-semibold text-primary-foreground active:text-primary-foreground/80",
         @class
       ]}
       {@rest}
@@ -310,7 +314,7 @@ defmodule ElixsteoAppWeb.CoreComponents do
 
     ~H"""
     <div>
-      <label class="flex items-center gap-4 text-sm leading-6 text-zinc-600">
+      <label class="flex items-center gap-4 text-sm leading-6 text-foreground">
         <input type="hidden" name={@name} value="false" disabled={@rest[:disabled]} />
         <input
           type="checkbox"
@@ -318,7 +322,7 @@ defmodule ElixsteoAppWeb.CoreComponents do
           name={@name}
           value="true"
           checked={@checked}
-          class="rounded border-zinc-300 text-zinc-900 focus:ring-0"
+          class="rounded border-input text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
           {@rest}
         />
         {@label}
@@ -335,7 +339,7 @@ defmodule ElixsteoAppWeb.CoreComponents do
       <select
         id={@id}
         name={@name}
-        class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
+        class="mt-2 block w-full rounded-md border border-input bg-background text-foreground shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         multiple={@multiple}
         {@rest}
       >
@@ -347,26 +351,6 @@ defmodule ElixsteoAppWeb.CoreComponents do
     """
   end
 
-  def input(%{type: "textarea"} = assigns) do
-    ~H"""
-    <div>
-      <.label for={@id}>{@label}</.label>
-      <textarea
-        id={@id}
-        name={@name}
-        class={[
-          "mt-2 block w-full rounded-lg text-zinc-900 focus:ring-0 sm:text-sm sm:leading-6 min-h-[6rem]",
-          @errors == [] && "border-zinc-300 focus:border-zinc-400",
-          @errors != [] && "border-rose-400 focus:border-rose-400"
-        ]}
-        {@rest}
-      ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
-      <.error :for={msg <- @errors}>{msg}</.error>
-    </div>
-    """
-  end
-
-  # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
     <div>
@@ -396,7 +380,7 @@ defmodule ElixsteoAppWeb.CoreComponents do
 
   def label(assigns) do
     ~H"""
-    <label for={@for} class="block text-sm font-semibold leading-6 text-zinc-800">
+    <label for={@for} class="block text-sm font-semibold leading-6 text-foreground">
       {render_slot(@inner_block)}
     </label>
     """
@@ -409,7 +393,7 @@ defmodule ElixsteoAppWeb.CoreComponents do
 
   def error(assigns) do
     ~H"""
-    <p class="mt-3 flex gap-3 text-sm leading-6 text-rose-600">
+    <p class="mt-3 flex gap-3 text-sm leading-6 text-destructive">
       <.icon name="hero-exclamation-circle-mini" class="mt-0.5 h-5 w-5 flex-none" />
       {render_slot(@inner_block)}
     </p>
@@ -419,84 +403,24 @@ defmodule ElixsteoAppWeb.CoreComponents do
   @doc """
   Renders a header with title.
   """
-  attr :dropdown_open, :boolean, required: true
+  attr :class, :string, default: nil
+
+  slot :inner_block, required: true
+  slot :subtitle
+  slot :actions
 
   def header(assigns) do
     ~H"""
-    <header class="header__container border-b">
-      <div class="header__content flex h-14 items-center justify-between px-2 pl-0">
-        <div class="flex items-center gap-2">
-          <!-- Dropdown -->
-          <div class="relative" phx-click-away="close">
-            <button
-              class="flex w-full items-center gap-3 rounded-lg border px-4 py-2 text-sm leading-tight
-           hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus:outline-none focus:ring-2 focus:ring-sidebar-accent"
-              phx-click="toggle-dropdown"
-            >
-              <div class="flex-1 text-left">
-                <div class="truncate font-semibold">Acme Inc</div>
-                <div class="truncate text-xs">Enterprise</div>
-              </div>
-              <svg
-                class="ml-auto h-4 w-4"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-            <%= if @dropdown_open do %>
-              <div
-                id="dropdown-menu"
-                class="absolute left-0 z-10 mt-2 w-full min-w-[14rem] rounded-lg shadow-lg"
-              >
-                <div class="px-4 py-2 text-xs text-muted-foreground">Lojas</div>
-                <ul class="divide-y divide-gray-200">
-                  <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer" phx-value-id="1">
-                    Loja 1
-                  </li>
-                  <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer" phx-value-id="2">
-                    Loja 2
-                  </li>
-                  <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer" phx-value-id="3">
-                    Loja 3
-                  </li>
-                </ul>
-                <div class="my-2 border-t"></div>
-                <button
-                  class="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100"
-                  phx-click="add-store"
-                >
-                  <div class="flex h-6 w-6 items-center justify-center rounded-md border bg-background">
-                    <svg
-                      class="h-4 w-4"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 4v16m8-8H4"
-                      />
-                    </svg>
-                  </div>
-                  <span class="font-medium text-muted-foreground">Adicionar Loja</span>
-                </button>
-              </div>
-            <% end %>
-          </div>
-        </div>
+    <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
+      <div>
+        <h1 class="text-lg font-semibold leading-8 text-foreground">
+          {render_slot(@inner_block)}
+        </h1>
+        <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-muted-foreground">
+          {render_slot(@subtitle)}
+        </p>
       </div>
+      <div class="flex-none">{render_slot(@actions)}</div>
     </header>
     """
   end
@@ -535,7 +459,7 @@ defmodule ElixsteoAppWeb.CoreComponents do
     ~H"""
     <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
       <table class="w-[40rem] mt-11 sm:w-full">
-        <thead class="text-sm text-left leading-6 text-zinc-500">
+        <thead class="text-sm text-left leading-6 text-muted-foreground">
           <tr>
             <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal">{col[:label]}</th>
             <th :if={@action != []} class="relative p-0 pb-4">
@@ -546,27 +470,27 @@ defmodule ElixsteoAppWeb.CoreComponents do
         <tbody
           id={@id}
           phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
-          class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700"
+          class="relative divide-y divide-border border-t border-border text-sm leading-6 text-foreground"
         >
-          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="group hover:bg-zinc-50">
+          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="group hover:bg-muted">
             <td
               :for={{col, i} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
               class={["relative p-0", @row_click && "hover:cursor-pointer"]}
             >
               <div class="block py-4 pr-6">
-                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-zinc-50 sm:rounded-l-xl" />
-                <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
+                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-muted sm:rounded-l-xl" />
+                <span class={["relative", i == 0 && "font-semibold"]}>
                   {render_slot(col, @row_item.(row))}
                 </span>
               </div>
             </td>
             <td :if={@action != []} class="relative w-14 p-0">
               <div class="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-zinc-50 sm:rounded-r-xl" />
+                <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-muted sm:rounded-r-xl" />
                 <span
                   :for={action <- @action}
-                  class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+                  class="relative ml-4 font-semibold text-foreground hover:text-muted-foreground"
                 >
                   {render_slot(action, @row_item.(row))}
                 </span>
