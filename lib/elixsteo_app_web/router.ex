@@ -17,7 +17,7 @@ defmodule ElixsteoAppWeb.Router do
   scope "/", ElixsteoAppWeb do
     pipe_through :browser
 
-    live "/coupons", CouponLive
+    live "/coupons", CouponLive.Index, :index
 
     live "/users", UserLive.Index, :index
     live "/users/new", UserLive.Index, :new
