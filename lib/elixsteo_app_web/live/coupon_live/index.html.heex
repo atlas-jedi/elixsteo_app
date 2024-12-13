@@ -6,5 +6,31 @@
       Adicionar Cupom
     </button>
   </div>
+  <!-- CouponDataFilter -->
   <!-- CouponDataTable -->
+  <.table
+    id="coupons"
+    rows={@streams.coupons}
+    row_click={fn {_id, coupon} -> JS.navigate(~p"/coupons/#{coupon}") end}
+  >
+    <:col :let={{_id, coupon}} label="Código">{coupon.code}</:col>
+    
+    <:col :let={{_id, coupon}} label="Desconto">{coupon.discount}</:col>
+    
+    <:action :let={{_id, coupon}}>
+      <div class="sr-only">
+        <.link navigate={~p"/coupons/#{coupon}"}>Show</.link>
+      </div>
+       <.link patch={~p"/coupons/#{coupon}/edit"}>Edit</.link>
+    </:action>
+    
+    <:action :let={{id, coupon}}>
+      <.link
+        phx-click={JS.push("delete", value: %{id: coupon.id}) |> hide("##{id}")}
+        data-confirm="Are you sure?"
+      >
+        Delete
+      </.link>
+    </:action>
+  </.table>
 </div>
