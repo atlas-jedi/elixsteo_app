@@ -2,8 +2,8 @@ import Config
 
 # Configure your database
 config :elixsteo_app, ElixsteoApp.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "docker",
+  password: "docker",
   hostname: "localhost",
   database: "elixsteo_app_dev",
   stacktrace: true,
