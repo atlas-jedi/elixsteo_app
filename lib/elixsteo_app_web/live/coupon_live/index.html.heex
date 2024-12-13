@@ -9,11 +9,17 @@
   <!-- CouponDataFilter -->
   <!-- CouponDataTable -->
   <.table id="coupons" rows={@streams.coupons}>
-    <:col :let={{_id, coupon}} label="Nome">{coupon.code}</:col>
+    <:col :let={{_id, coupon}} label="Nome">{coupon.name}</:col>
     
     <:col :let={{_id, coupon}} label="Status">{coupon.status}</:col>
     
-    <:col :let={{_id, coupon}} label="Valor">{coupon.discount}</:col>
+    <:col :let={{_id, coupon}} label="Valor">
+      <%= if coupon.type == "percentage" do %>
+        {coupon.discount}%
+      <% else %>
+        R$ {coupon.discount}
+      <% end %>
+    </:col>
     
     <:col :let={{_id, coupon}} label="Tipo">{coupon.type}</:col>
     
