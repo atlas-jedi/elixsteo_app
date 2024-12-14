@@ -24,18 +24,14 @@
     <:col :let={{_id, coupon}} label="Tipo">{coupon.type}</:col>
     
     <:action :let={{_id, coupon}}>
-      <div class="sr-only">
-        <.link navigate={~p"/coupons/#{coupon}"}>Show</.link>
-      </div>
-       <.link patch={~p"/coupons/#{coupon}/edit"}>Edit</.link>
+      <.link class="hover:bg-zinc-200 p-1">
+        <Heroicons.icon name="eye" class="w-4" />
+      </.link>
     </:action>
     
-    <:action :let={{id, coupon}}>
-      <.link
-        phx-click={JS.push("delete", value: %{id: coupon.id}) |> hide("##{id}")}
-        data-confirm="Are you sure?"
-      >
-        Delete
+    <:action :let={{_id, coupon}}>
+      <.link class="hover:bg-zinc-200 p-1">
+        <Heroicons.icon name="trash" class="w-4" />
       </.link>
     </:action>
   </.table>
