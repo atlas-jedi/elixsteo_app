@@ -217,18 +217,53 @@ defmodule ElixsteoAppWeb.CoreComponents do
   end
 
   @doc """
-  Renders a button.
+  Renders a button with variants.
 
   ## Examples
 
       <.button>Send!</.button>
-      <.button phx-click="go" class="ml-2">Send!</.button>
+      <.button variant="danger" phx-click="go" class="ml-2">Delete</.button>
+      <.button variant="outlined">Cancel</.button>
   """
   attr :type, :string, default: nil
   attr :class, :string, default: nil
+  attr :variant, :string, default: "primary", values: ["primary", "danger", "outlined"]
   attr :rest, :global, include: ~w(disabled form name value)
 
   slot :inner_block, required: true
+
+  def button(%{variant: "danger"} = assigns) do
+    ~H"""
+    <button
+      type={@type}
+      class={[
+        "phx-submit-loading:opacity-75 rounded-lg bg-destructive hover:bg-destructive/90",
+        "py-2 px-3 text-sm font-semibold text-destructive-foreground active:text-destructive-foreground/80",
+        @class
+      ]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </button>
+    """
+  end
+
+  def button(%{variant: "outlined"} = assigns) do
+    ~H"""
+    <button
+      type={@type}
+      class={[
+        "phx-submit-loading:opacity-75 rounded-lg bg-background hover:bg-background/90",
+        "py-2 px-3 text-sm font-semibold text-foreground active:text-primary-foreground/80",
+        "border",
+        @class
+      ]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </button>
+    """
+  end
 
   def button(assigns) do
     ~H"""
@@ -472,25 +507,29 @@ defmodule ElixsteoAppWeb.CoreComponents do
           phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
           class="relative divide-y divide-border border-t border-border text-sm leading-6 text-foreground"
         >
-          <tr :for={row <- @rows} id={@row_id && @row_id.(row)} class="group hover:bg-muted">
+          <tr
+            :for={row <- @rows}
+            id={@row_id && @row_id.(row)}
+            class="group hover:bg-accent/50 transition-all duration-200"
+          >
             <td
               :for={{col, i} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
               class={["relative p-0", @row_click && "hover:cursor-pointer"]}
             >
               <div class="block py-4 pr-6">
-                <span class="absolute -inset-y-px right-0 -left-4 group-hover:bg-muted sm:rounded-l-xl" />
+                <span class="absolute -inset-y-px right-0 -left-4" />
                 <span class={["relative", i == 0 && "font-semibold"]}>
                   {render_slot(col, @row_item.(row))}
                 </span>
               </div>
             </td>
-            <td :if={@action != []} class="relative w-14 p-0">
+            <td :if={@action != []} class="relative w-14 p-0 pr-16">
               <div class="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-muted sm:rounded-r-xl" />
+                <span class="absolute -inset-y-px -right-4 left-0" />
                 <span
                   :for={action <- @action}
-                  class="relative ml-4 font-semibold text-foreground hover:text-muted-foreground"
+                  class="relative ml-2 p-2 font-semibold text-foreground hover:bg-muted rounded-md transition-all duration-200"
                 >
                   {render_slot(action, @row_item.(row))}
                 </span>
