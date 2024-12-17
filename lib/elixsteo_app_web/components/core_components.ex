@@ -492,20 +492,24 @@ defmodule ElixsteoAppWeb.CoreComponents do
       end
 
     ~H"""
-    <div class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class="w-[40rem] mt-11 sm:w-full">
-        <thead class="text-sm text-left leading-6 text-muted-foreground">
+    <div class="overflow-auto px-4 sm:px-0">
+      <table class="w-[40rem] mt-11 sm:w-full overflow-hidden border border-border rounded-lg bg-background border-separate border-spacing-0">
+        <thead class="text-sm text-left leading-6 bg-muted/50 text-muted-foreground">
           <tr>
-            <th :for={col <- @col} class="p-0 pb-4 pr-6 font-normal">{col[:label]}</th>
-            <th :if={@action != []} class="relative p-0 pb-4">
-              <span class="sr-only">{gettext("Actions")}</span>
+            <th :for={col <- @col} class="h-full px-4 py-2 font-bold border-b border-border">
+              <div class="flex items-center">{col[:label]}</div>
+            </th>
+            <th :if={@action != []} class="h-full py-4 border-b border-border">
+              <div class="flex items-center">
+                <span class="sr-only">{gettext("Actions")}</span>
+              </div>
             </th>
           </tr>
         </thead>
         <tbody
           id={@id}
           phx-update={match?(%Phoenix.LiveView.LiveStream{}, @rows) && "stream"}
-          class="relative divide-y divide-border border-t border-border text-sm leading-6 text-foreground"
+          class="relative text-sm leading-6 text-foreground"
         >
           <tr
             :for={row <- @rows}
@@ -515,18 +519,14 @@ defmodule ElixsteoAppWeb.CoreComponents do
             <td
               :for={{col, i} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
-              class={["relative p-0", @row_click && "hover:cursor-pointer"]}
+              class={["relative p-0 border-b border-border", @row_click && "hover:cursor-pointer"]}
             >
-              <div class="block py-4 pr-6">
-                <span class="absolute -inset-y-px right-0 -left-4" />
-                <span class={["relative", i == 0 && "font-semibold"]}>
-                  {render_slot(col, @row_item.(row))}
-                </span>
+              <div class="block p-4 pr-6">
+                <span class="relative">{render_slot(col, @row_item.(row))}</span>
               </div>
             </td>
-            <td :if={@action != []} class="relative w-14 p-0 pr-16">
+            <td :if={@action != []} class="relative w-14 p-0 pr-16 border-b border-border">
               <div class="relative whitespace-nowrap py-4 text-right text-sm font-medium">
-                <span class="absolute -inset-y-px -right-4 left-0" />
                 <span
                   :for={action <- @action}
                   class="relative ml-2 p-2 font-semibold text-foreground hover:bg-muted rounded-md transition-all duration-200"
