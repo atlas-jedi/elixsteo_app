@@ -253,8 +253,8 @@ defmodule ElixsteoAppWeb.CoreComponents do
     <button
       type={@type}
       class={[
-        "phx-submit-loading:opacity-75 rounded-lg bg-background hover:bg-background/90",
-        "py-2 px-3 text-sm font-semibold text-foreground active:text-primary-foreground/80",
+        "phx-submit-loading:opacity-75 rounded-lg bg-background hover:bg-muted transition-all duration-100",
+        "py-2 px-3 text-sm font-semibold text-foreground",
         "border",
         @class
       ]}
