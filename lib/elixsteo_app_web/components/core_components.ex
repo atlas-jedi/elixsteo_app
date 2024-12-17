@@ -517,7 +517,7 @@ defmodule ElixsteoAppWeb.CoreComponents do
             class="group hover:bg-accent/50 transition-all duration-200"
           >
             <td
-              :for={{col, i} <- Enum.with_index(@col)}
+              :for={{col, _i} <- Enum.with_index(@col)}
               phx-click={@row_click && @row_click.(row)}
               class={["relative p-0 border-b border-border", @row_click && "hover:cursor-pointer"]}
             >
