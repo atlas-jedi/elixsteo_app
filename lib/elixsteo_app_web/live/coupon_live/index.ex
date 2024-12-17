@@ -35,7 +35,7 @@ defmodule ElixsteoAppWeb.CouponLive.Index do
 
     {:noreply,
      socket
-     |> stream_delete(:coupons, coupon)
+     |> stream(:coupons, Coupons.list_coupons())
      |> assign(:delete_modal_open, false)
      |> assign(:coupon_to_delete, nil)
      |> put_flash(:info, "Cupom excluído com sucesso")}

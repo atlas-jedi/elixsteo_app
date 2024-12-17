@@ -74,19 +74,18 @@ defmodule ElixsteoApp.Coupons do
   end
 
   @doc """
-  Deletes a coupon.
+  Soft deletes a coupon by setting its status to 'inactive'.
 
   ## Examples
 
       iex> delete_coupon(coupon)
       {:ok, %Coupon{}}
 
-      iex> delete_coupon(coupon)
-      {:error, %Ecto.Changeset{}}
-
   """
   def delete_coupon(%Coupon{} = coupon) do
-    Repo.delete(coupon)
+    coupon
+    |> Coupon.changeset(%{status: "inactive"})
+    |> Repo.update()
   end
 
   @doc """
