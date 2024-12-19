@@ -1,7 +1,15 @@
 defmodule ElixsteoAppWeb.SidebarComponent do
   use ElixsteoAppWeb, :live_component
 
+  @links [
+    %{"icon" => "hero-user", "label" => "Usuários", "path" => "/users"},
+    %{"icon" => "hero-ticket", "label" => "Cupons", "path" => "/coupons"}
+  ]
+
+  @impl true
   def render(assigns) do
+    assigns = assign(assigns, :links, @links)
+
     ~H"""
     <div class="sidebar-root">
       <div id={@id} class="fixed h-screen w-16 bg-sidebar text-sidebar-foreground border-r">
@@ -15,23 +23,26 @@ defmodule ElixsteoAppWeb.SidebarComponent do
             />
           </div>
           
-          <div class="group relative flex items-center justify-center">
-            <.link navigate={~p"/users"} class="group-hover:text-primary">
-              <.icon name="hero-user" class="w-4 h-4" />
-            </.link>
-            
-            <.tooltip>Usuários</.tooltip>
-          </div>
-          
-          <div class="group relative flex items-center justify-center">
-            <.link navigate={~p"/coupons"} class="group-hover:text-primary">
-              <.icon name="hero-ticket" class="w-4 h-4" />
-            </.link>
-            
-            <.tooltip>Cupons</.tooltip>
-          </div>
+          <.nav_item
+            :for={link <- @links}
+            path={link["path"]}
+            icon={link["icon"]}
+            tooltip={link["label"]}
+          />
         </nav>
       </div>
+    </div>
+    """
+  end
+
+  defp nav_item(assigns) do
+    ~H"""
+    <div class="group relative flex items-center justify-center">
+      <.link navigate={@path} class="group-hover:text-primary">
+        <.icon name={@icon} class="w-4 h-4" />
+      </.link>
+      
+      <.tooltip>{@tooltip}</.tooltip>
     </div>
     """
   end
