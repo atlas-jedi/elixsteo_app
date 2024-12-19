@@ -19,20 +19,16 @@ defmodule ElixsteoAppWeb.SidebarComponent do
             <.link navigate={~p"/users"} class="group-hover:text-primary">
               <.icon name="hero-user" class="w-4 h-4" />
             </.link>
-            <!-- Tooltip -->
-            <div class="absolute left-7 top-1/2 -translate-y-1/2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300 ease-in-out bg-primary text-primary-foreground text-xs px-2 py-1 rounded shadow">
-              Usuários
-            </div>
+            
+            <.tooltip>Usuários</.tooltip>
           </div>
           
           <div class="group relative flex items-center justify-center">
             <.link navigate={~p"/coupons"} class="group-hover:text-primary">
               <.icon name="hero-ticket" class="w-4 h-4" />
             </.link>
-            <!-- Tooltip -->
-            <div class="absolute left-7 top-1/2 -translate-y-1/2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300 ease-in-out bg-primary text-primary-foreground text-xs px-2 py-1 rounded shadow">
-              Cupons
-            </div>
+            
+            <.tooltip>Cupons</.tooltip>
           </div>
         </nav>
       </div>

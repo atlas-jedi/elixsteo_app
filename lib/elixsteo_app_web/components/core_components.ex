@@ -20,6 +20,33 @@ defmodule ElixsteoAppWeb.CoreComponents do
   import ElixsteoAppWeb.Gettext
 
   @doc """
+  Renders a tooltip component that appears on hover.
+
+  ## Examples
+
+  The parent element must have the 'group' class for the hover functionality to work.
+
+      <div class="group relative flex items-center justify-center">
+        <button class="group-hover:text-primary">
+          <.icon name="hero-user" class="w-4 h-4" />
+        </button>
+        <.tooltip>
+          Usuários
+        </.tooltip>
+      </div>
+
+  """
+  slot :inner_block, required: true
+
+  def tooltip(assigns) do
+    ~H"""
+    <div class="absolute left-7 top-1/2 -translate-y-1/2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-300 ease-in-out bg-primary text-primary-foreground text-xs px-2 py-1 rounded shadow">
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  @doc """
   Renders a modal.
 
   ## Examples
