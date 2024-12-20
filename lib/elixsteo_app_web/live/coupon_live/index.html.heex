@@ -1,11 +1,14 @@
 <div class="space-y-4 py-4">
-  <div class="flex items-center justify-between py-4">
-    <h1 class="text-lg">Listagem de Cupons</h1>
-    
-    <.button variant="outlined" class="flex justify-center items-center gap-2">
-      <.icon name="hero-plus" class="w-4 h-4" /> Adicionar Cupom
-    </.button>
-  </div>
+  <.header>
+    Listagem de Cupons
+    <:actions>
+      <.link patch={~p"/coupons/new"}>
+        <.button variant="outlined" class="flex justify-center items-center gap-2">
+          <.icon name="hero-plus" class="w-4 h-4" /> Adicionar Cupom
+        </.button>
+      </.link>
+    </:actions>
+  </.header>
   <!-- CouponDataFilter -->
   <!-- CouponDataTable -->
   <.table id="coupons" rows={@streams.coupons}>
